@@ -1,0 +1,69 @@
+from keras.models import Sequential
+import tensorflow as tf
+
+import tensorflow_datasets as tfds
+
+tf.enable_eager_execution()
+from keras.layers.core import Dense, Activation, Dropout, Flatten
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.optimizers import SGD, RMSprop, adam
+from keras.utils import np_utils
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn import metrics
+from sklearn.utils import shuffle
+from sklearn.model_selection import train_test_split
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import cv2
+import random
+from numpy import *
+from PIL import Image
+import theano
+
+# Resizing images into 200 X 200
+
+path_test = "./train"
+CATEGORIES = ["Locust","NoLocust"]
+print(img_array.shape)
+IMG_SIZE =200
+new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
+
+training = []
+
+def createTrainingData():
+  for category in CATEGORIES:
+    path = os.path.join(path_test, category)
+    class_num = CATEGORIES.index(category)
+    for img in os.listdir(path):
+      img_array = cv2.imread(os.path.join(path,img))
+      new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
+      training.append([new_array, class_num])
+
+createTrainingData()
+random.shuffle(training)
+
+X =[]
+y =[]
+for features, label in training:
+  X.append(features)
+  y.append(label)
+X = np.array(X).reshape(-1, IMG_SIZE, IMG_SIZE, 3)
+
+X = X.astype('float32')
+X /= 255
+from keras.utils import np_utils
+Y = np_utils.to_categorical(y, 4)
+print(Y[100])
+print(shape(Y))
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 4)
+batch_size = 20
+nb_classes =2
+nb_epochs = 5
+img_rows, img_columns = 300, 300
+img_channel = 3
+nb_filters = 32
+nb_pool = 2
+nb_conv = 3
