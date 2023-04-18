@@ -1,0 +1,6 @@
+from roboflow import Roboflow
+rf = Roboflow(api_key="rwuB8f0uXN2hAD8eGCco")
+project = rf.workspace().project("locust-6a5yl")
+model = project.version(1).model
+
+print(model.predict("./LocustModelDetection/TestImages/img6.jpg", confidence=40, overlap=30).json())
